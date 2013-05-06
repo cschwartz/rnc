@@ -36,22 +36,27 @@ class UserEquipment(object):
     def run(self):
         while True:
             yield env.timeout(self.inter_activity_time())
+            authentication_failed = False 
             for i in range(self.number_of_signalling_messages):
                 print("%f: (%d) sending sigalling message %d" % (env.now, self.id, i))
                 try:
                     yield env.start(self.rnc.process(self.id, i))
                 except SignalingBlocked:
+                    authentication_failed = True
                     print("%f: (%d) signalling message %d has been blocked" % (env.now, self.id, i))
                     break
 
+            if not authentication_failed:
+                print("%f: (%d) beginning transmission of payload" % (env.now, self.id))
+
 number_of_ues = 3
 
-number_of_signaling_messages = 3
+number_of_signaling_messages = 2
 
 inter_activity_time_mean = 2
 inter_activity_time = lambda: random.expovariate(inter_activity_time_mean)
 
-signalling_service_time_mean = 1/number_of_ues * 0.9
+signalling_service_time_mean = 1/number_of_ues * 0.5
 signalling_service_time = lambda: random.expovariate(signalling_service_time_mean)
 
 signaling_message_queue_length = 1

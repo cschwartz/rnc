@@ -1,1 +1,2 @@
-simpy>3.0
+mercurial
+-e hg+https://bitbucket.org/simpy/simpy/#egg=simpy
